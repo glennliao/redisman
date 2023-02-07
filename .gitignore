@@ -1,0 +1,7 @@
+.idea
+dist
+config.yaml
+db.sqlite3
+temp
+packed
+*.exe
