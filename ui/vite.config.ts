@@ -12,6 +12,7 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base:"./",
   server: {
     host: "localhost",
     port: 8888,

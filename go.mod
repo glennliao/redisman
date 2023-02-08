@@ -4,14 +4,18 @@ go 1.19
 
 require (
 	github.com/glennliao/apijson-go v0.1.0
-	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.2.6
+	github.com/glennliao/table-sync v0.0.0
+	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.3.1
 	github.com/gogf/gf/contrib/drivers/sqlite/v2 v2.3.1
-	github.com/gogf/gf/v2 v2.2.6
+	github.com/gogf/gf/v2 v2.3.1
 	github.com/redis/go-redis/v9 v9.0.2
 	github.com/samber/lo v1.33.0
 	github.com/wailsapp/wails/v2 v2.3.1
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 )
+
+replace github.com/glennliao/table-sync => ../table-sync
+replace github.com/glennliao/apijson-go => ../apijson-go
 
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
@@ -25,7 +29,6 @@ require (
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
-	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect

@@ -2,8 +2,8 @@ package api
 
 import (
 	"context"
-	_ "github.com/glennliao/redisman/api/action"
-	"github.com/glennliao/redisman/api/ws"
+	_ "github.com/glennliao/redisman/server/api/action"
+	"github.com/glennliao/redisman/server/api/ws"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -56,7 +56,7 @@ func Ws(r *ghttp.Request) {
 
 		req.User = &user
 
-		handler(ctx, &req, func(ctx context.Context, ret any, err error) {
+		ws.Handler(ctx, &req, func(ctx context.Context, ret any, err error) {
 			var retMap = map[string]any{
 				"id":   req.Id,
 				"data": ret,
@@ -80,13 +80,4 @@ func Ws(r *ghttp.Request) {
 	}
 	users.Delete(id)
 
-}
-
-func handler(ctx context.Context, req *ws.Req, reply func(ctx context.Context, ret any, err error)) {
-	for k, action := range ws.ActionMap {
-		if k == req.Action {
-			action(ctx, req, reply)
-			break
-		}
-	}
 }

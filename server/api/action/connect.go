@@ -3,9 +3,9 @@ package action
 import (
 	"context"
 	"fmt"
-	"github.com/glennliao/redisman/api/ws"
-	"github.com/glennliao/redisman/service"
-	"github.com/glennliao/redisman/service/model"
+	"github.com/glennliao/redisman/server/api/ws"
+	"github.com/glennliao/redisman/server/service"
+	"github.com/glennliao/redisman/server/service/model"
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
@@ -25,15 +25,11 @@ func Conn(ctx context.Context, req *ws.Req, reply func(ctx context.Context, ret 
 	param := gjson.New(req.Params)
 	id := param.Get("id").Int()
 
-	g.Dump(req.Params)
-
 	connection, err := service.RedisConnection().Get(ctx, id)
 	if err != nil {
 		reply(ctx, nil, err)
 		return
 	}
-
-	g.Dump(connection)
 
 	// todo 检查id权限
 	// 获取conn meta
@@ -104,6 +100,7 @@ func getRedisClientByConfig(ctx context.Context, connection *model.RedisConnecti
 		Password:     connection.Password,
 		DB:           gconv.Int(connection.Db),
 		DialTimeout:  time.Second * 5,
+		PoolSize:     1,
 		Dialer:       dialer,
 		ReadTimeout:  -2,
 		WriteTimeout: -2,

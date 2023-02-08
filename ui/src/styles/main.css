@@ -3,3 +3,7 @@
 html.dark {
   //background: #22272e;
 }
+
+.n-tree-node-indent > div{
+  max-width: 8px;
+}

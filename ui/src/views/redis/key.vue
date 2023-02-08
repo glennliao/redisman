@@ -1,33 +1,34 @@
 <template>
 
-  <n-grid y-gap="8" x-gap="8" cols="4 xs:1 s:2 m:4 l:4 xl:4 2xl:4" responsive="screen">
-    <n-gi span="2">
+  <n-grid y-gap="8" x-gap="8" cols="24"  item-responsive>
+    <n-gi span="24 320:24 560:12 800:12">
       <n-input-group>
         <n-input-group-label size="small">Key</n-input-group-label>
-        <n-input size="small" v-model:value="keyVal"/>
-        <n-button size="small" type="primary" ghost @click="changeKey">
-          <template #icon>
-            <n-icon>
+        <n-input size="small" v-model:value="keyVal">
+          <template #suffix>
+            <n-icon title="save" class="cursor-pointer" @click="changeKey">
               <SaveOutline/>
             </n-icon>
           </template>
-        </n-button>
+        </n-input>
       </n-input-group>
     </n-gi>
-    <n-gi span="1">
+    <n-gi span="24 320:16 560:8">
       <n-input-group>
         <n-input-group-label size="small">TTL</n-input-group-label>
-        <n-input-number size="small" :show-button="false" v-model:value="ttlVal"/>
-        <n-button  size="small" type="primary" ghost @click="changeTTL">
-          <template #icon>
-            <n-icon>
+        <n-input-number size="small" :show-button="false" v-model:value="ttlVal">
+          <template #suffix>
+            <div title="forever" class="cursor-pointer" @click="changeTTL('-')">
+              X
+            </div>
+            <n-icon title="save" class="cursor-pointer ml-2" @click="changeTTL">
               <SaveOutline/>
             </n-icon>
           </template>
-        </n-button>
+        </n-input-number>
       </n-input-group>
     </n-gi>
-    <n-gi span="1">
+    <n-gi span="24 320:8 560:4">
       <n-button-group size="small">
         <n-popconfirm
           @positive-click="delKey"
@@ -56,22 +57,22 @@
     </n-gi>
   </n-grid>
 
-  <n-grid class="mt-2" y-gap="8" x-gap="8" cols="4 xs:1 s:2 m:4 l:4 xl:4 2xl:4" responsive="screen">
-    <n-gi span="2">
+  <n-grid class="mt-2" y-gap="8" x-gap="8" cols="24" >
+    <n-gi span="12">
       <n-tag round :bordered="false"  type="success">
         <div class="text-center" style="min-width: 30px">
           {{ type }}
         </div>
       </n-tag>
     </n-gi>
-    <n-gi span="1">
+    <n-gi span="8">
       <n-tag round :bordered="false"  type="info">
         <div class="text-center" :title="ttlHumanizerDetail" style="max-width: 120px;overflow: hidden;">
           {{ ttlHumanizer }}
         </div>
       </n-tag>
     </n-gi>
-    <n-gi span="1">
+    <n-gi span="4">
       <n-button size="small" v-if="![RedisTypes.String].includes(type)" strong  ghost round type="success" @click="addField">
         <template #icon>
           <n-icon >
@@ -107,7 +108,7 @@ import KeyValue from "~/views/redis/value.vue";
 import {Refresh, RemoveCircleOutline,SaveOutline,Add} from '@vicons/ionicons5'
 import {NButton,useMessage } from 'naive-ui'
 import {useKeysHook} from "~/views/redis/hook/keys";
-import {useInfo} from "~/views/redis/hook/conn";
+import {useConn} from "~/views/redis/hook/conn";
 import {RedisTypes} from "~/views/redis/redis_types";
 import humanizeDuration from 'humanize-duration'
 
@@ -149,7 +150,7 @@ const props = defineProps({
 })
 
 const {
-  type, ttl, load, value, len, list,set,del, expire,rename
+  type, ttl, load, value, len, list,set,del, expire,persist,rename
 } = useValueHook()
 
 const {scan} = useKeysHook()
@@ -314,13 +315,20 @@ function saveVal(val){
   })
 }
 
-function changeTTL(){
-  expire(props.curKey, ttlVal.value).then(()=>{
-    message.success(
-      "Success"
-    )
-    refresh(keyVal.value)
-  })
+function changeTTL(v){
+  let ttl = v || ttlVal.value
+  if (ttl !== "-"){
+    expire(props.curKey, ttl).then(()=>{
+      message.success("Success")
+      refresh(keyVal.value)
+    })
+  }else{
+    persist(props.curKey).then(()=>{
+      message.success("Success")
+      refresh(keyVal.value)
+    })
+  }
+
 }
 
 function changeKey(){
@@ -333,7 +341,7 @@ function changeKey(){
   })
 }
 
-const info = useInfo()
+const info = useConn()
 
 function refresh(k){
 

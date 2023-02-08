@@ -7,7 +7,7 @@ import LocalesChange from "./components/LocalesChange/index.vue";
   <div
     class="sticky top-0 z-30 flex h-10 w-full justify-center text-base-content opacity-90 backdrop-blur transition-all duration-100"
   >
-    <nav class="navbar w-full" style="min-height:2.5rem" >
+    <nav class="navbar w-full" style="min-height:unset" >
       <div class="flex flex-1 md:gap-1 lg:gap-2">
         <router-link
           to="/"

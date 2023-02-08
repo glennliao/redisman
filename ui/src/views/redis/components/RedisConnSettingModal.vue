@@ -19,9 +19,9 @@
         label-placement="left"
       >
         <n-grid>
-          <n-gi :span="12" v-for="item in dbList" :key="item.label">
-            <n-form-item  :label="item.label+''" :path="item.label+''">
-              <n-input v-model:value="formValue[item.label+'']" :placeholder="item.label+''"/>
+          <n-gi :span="12" v-for="item in dbAliasList" :key="item.label">
+            <n-form-item  :label="item.label" :path="item.label">
+              <n-input v-model:value="formValue[item.label]" :placeholder="item.label"/>
             </n-form-item>
           </n-gi>
         </n-grid>
@@ -40,8 +40,8 @@
 <script lang="ts">
 import {FormInst} from "naive-ui";
 
-import {apijson} from "~/api/redis";
-import { useInfo } from "../hook/conn";
+import {apiJson} from "~/api";
+import { useConn } from "../hook/conn";
 
 
 export default {
@@ -76,14 +76,16 @@ export default {
           let dbAliasOri = formValue.value
           let dbAlias:Record<string, string> = {}
           Object.keys(dbAliasOri).forEach(k=>{
+
             dbAlias[k+""] = dbAliasOri[k]
           })
 
-          apijson.put({
+
+          apiJson.put({
             tag:"RedisConnection",
             RedisConnection:{
               dbAlias,
-              id:connMeta.value.id,
+              id:connMeta.value.id+"",
             }
           }).then(()=>{
             console.log()
@@ -100,22 +102,26 @@ export default {
       })
     }
 
-    let addFieldKey = ''
-    let oldData: Record<any, any> | undefined = {}
-
     function open() {
       showModal.value = true
-      oldData = {}
       formValue.value = connMeta.value.dbAlias
     }
 
-    const {dbList,connMeta} = useInfo()
 
+
+    const {dbList,connMeta} = useConn()
+    const dbAliasList = computed(()=>{
+      return dbList.value.map(item=>{
+        return {
+          label:item.label+""
+        }
+      })
+    })
     return {
       open,
       showModal, rules, formValue, typeRef,
       bodyStyle, segmented, formRef,
-      handleValidateClick,dbList
+      handleValidateClick,dbAliasList
     }
   }
 }

@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/glennliao/redisman/service/model"
+	"github.com/glennliao/redisman/server/service/model"
 	"github.com/gogf/gf/v2/frame/g"
 )
 

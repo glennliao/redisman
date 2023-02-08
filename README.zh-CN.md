@@ -2,7 +2,8 @@
 
 > v0.2.0 由于使用replace导入了本地库, 故无法clone本库进行编译。 可在版本release中下载使用
 
-## Feature
+
+## 特征
 - webui / desktop
 - 支持 stream(redis6.0), username(6.0), bitmap, json [WIP]
 - 团队使用,多用户,多角色, 共享redis连接 [WIP]
@@ -11,7 +12,7 @@
 - db 别名 
 - 连接分组 [WIP]
 
-## Roadmap
+## 路线图
 
 - [x] 树状显示key
 - [x] 批量删除key
@@ -33,8 +34,7 @@
 - [ ] 主题, i18n, 
 - [x] sqlite, mysql
 - [ ] jumpserver 转发 支持
-- [x] display ttl with h,m,s format
-- [ ] redis json支持
+- [x] 使用 h,m,s 显示剩余时长
 - [ ] 支持http? socket代理 (不同连接可使用不同代理)
 - [ ] 数据库迁移? db2->db1
 - [ ] hash,set,list复制成json
@@ -43,20 +43,20 @@
 - [ ] 审计记录
 
 
-## log
-- 0.2.0 (2023-02-13) :
-    - support edit/test connection
-    - support json editor
-    - support persist
+## 版本日志
+- 0.2.0 (2023-02-13) : 
+  - support edit/test connection
+  - support json editor
+  - support persist
 
 - 0.1.0 (2023-02-07)
-    - support add/delete connection
-    - support ssh
-    - support string,list,hash,set,zset,stream
-    - support db alias
-    - support display ttl with h,m,s format
+  - support add/delete connection
+  - support ssh
+  - support string,list,hash,set,zset,stream
+  - support db alias
+  - support display ttl with h,m,s format
 
-## Screenshot
+## 截图
 ![](./doc/1.png)
 
 ![](./doc/2.png)

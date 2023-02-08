@@ -9,7 +9,7 @@
     :mask-closable="false"
     :segmented="segmented"
     auto-focus
-
+    style="--n-padding-bottom:6px"
   >
 
     <div>
@@ -19,141 +19,141 @@
         :model="formValue"
         :rules="rules"
       >
-        <n-form-item required label="title" path="title">
-          <n-input v-model:value="formValue.title" placeholder="title"/>
-        </n-form-item>
-        <n-grid :x-gap="4">
-          <n-gi :span="12">
-            <n-form-item  label="host" path="host">
-              <n-input v-model:value="formValue.host" placeholder="127.0.0.1"/>
+
+        <n-tabs type="line" animated>
+
+          <n-tab-pane name="general" tab="General">
+            <n-form-item required label="title" path="title">
+              <n-input v-model:value="formValue.title" placeholder="title"/>
             </n-form-item>
-          </n-gi>
-          <n-gi :span="12">
-            <n-form-item label="port" path="port">
-              <n-input :allow-input="(value: string) => !value || /^\d+$/.test(value)"  v-model:value="formValue.port" placeholder="6379"/>
-            </n-form-item>
-          </n-gi>
-        </n-grid>
-        <n-grid :x-gap="4">
-          <n-gi :span="12">
-            <n-form-item label="username" path="username">
-              <n-input v-model:value="formValue.username" placeholder="username"/>
-            </n-form-item>
-          </n-gi>
-          <n-gi :span="12">
-            <n-form-item label="password" path="password">
-              <n-input v-model:value="formValue.password" placeholder="password"/>
-            </n-form-item>
-          </n-gi>
-        </n-grid>
-
-
-
-        <div>
-          <n-grid :cols="24">
-            <n-gi :span="5">
-              <n-switch disabled>
-                <template #checked>
-                  Readonly
-                </template>
-                <template #unchecked>
-                  Readonly
-                </template>
-              </n-switch>
-            </n-gi>
-            <n-gi :span="4">
-
-              <n-switch v-model:value="formValue.options.ssh.enable">
-                <template #checked>
-                  SSH
-                </template>
-                <template #unchecked>
-                  SSH
-                </template>
-              </n-switch>
-            </n-gi>
-            <n-gi :span="4">
-              <n-switch disabled>
-                <template #checked>
-                  SSL
-                </template>
-                <template #unchecked>
-                  SSL
-                </template>
-              </n-switch>
-            </n-gi>
-            <n-gi :span="5">
-              <n-switch disabled>
-                <template #checked>
-                  Sentinel
-                </template>
-                <template #unchecked>
-                  Sentinel
-                </template>
-              </n-switch>
-            </n-gi>
-            <n-gi :span="5">
-              <n-switch disabled>
-                <template #checked>
-                  Cluster
-                </template>
-                <template #unchecked>
-                  Cluster
-                </template>
-              </n-switch>
-            </n-gi>
-          </n-grid>
-        </div>
-
-        <div>
-          <div v-if="formValue.options.ssh.enable">
-            <n-divider title-placement="left">
-              SSH
-            </n-divider>
+            <n-grid :x-gap="4">
+              <n-gi :span="12">
+                <n-form-item  label="host" path="host">
+                  <n-input v-model:value="formValue.host" placeholder="127.0.0.1"/>
+                </n-form-item>
+              </n-gi>
+              <n-gi :span="12">
+                <n-form-item label="port" path="port">
+                  <n-input :allow-input="(value: string) => !value || /^\d+$/.test(value)"  v-model:value="formValue.port" placeholder="6379"/>
+                </n-form-item>
+              </n-gi>
+            </n-grid>
+            <n-grid :x-gap="4">
+              <n-gi :span="12">
+                <n-form-item label="username" path="username">
+                  <n-input v-model:value="formValue.username" placeholder="username"/>
+                </n-form-item>
+              </n-gi>
+              <n-gi :span="12">
+                <n-form-item label="password" path="password">
+                  <n-input v-model:value="formValue.password" placeholder="password"/>
+                </n-form-item>
+              </n-gi>
+            </n-grid>
             <div>
+              <n-grid :cols="24">
+                <n-gi :span="5">
+                  <n-switch disabled>
+                    <template #checked>
+                      Readonly
+                    </template>
+                    <template #unchecked>
+                      Readonly
+                    </template>
+                  </n-switch>
+                </n-gi>
+
+                <n-gi :span="4">
+                  <n-switch disabled>
+                    <template #checked>
+                      SSL
+                    </template>
+                    <template #unchecked>
+                      SSL
+                    </template>
+                  </n-switch>
+                </n-gi>
+                <n-gi :span="5">
+                  <n-switch disabled>
+                    <template #checked>
+                      Sentinel
+                    </template>
+                    <template #unchecked>
+                      Sentinel
+                    </template>
+                  </n-switch>
+                </n-gi>
+                <n-gi :span="5">
+                  <n-switch disabled>
+                    <template #checked>
+                      Cluster
+                    </template>
+                    <template #unchecked>
+                      Cluster
+                    </template>
+                  </n-switch>
+                </n-gi>
+              </n-grid>
+            </div>
+
+          </n-tab-pane>
+          <n-tab-pane name="ssh" tab="SSH" display-directive="show">
+            <template #tab>
+              SSH
+              <n-badge class="ml-1" size="small" :dot="enableSSH" type="info"/>
+            </template>
+            <n-switch v-model:value="formValue.options.ssh.enable">
+              <template #checked>
+                SSH
+              </template>
+              <template #unchecked>
+                SSH
+              </template>
+            </n-switch>
+            <div class="mt-4">
               <n-grid :x-gap="4">
                 <n-gi :span="12">
-                  <n-form-item required label="host" path="formValue.options.ssh.host">
-                    <n-input v-model:value="formValue.options.ssh.host" placeholder="127.0.0.1"/>
+                  <n-form-item required label="host" path="options.ssh.host">
+                    <n-input :disabled="!enableSSH" v-model:value="formValue.options.ssh.host" placeholder="127.0.0.1"/>
                   </n-form-item>
                 </n-gi>
                 <n-gi :span="12">
-                  <n-form-item required label="port" path="formValue.options.ssh.port">
-                    <n-input :allow-input="(value: string) => !value || /^\d+$/.test(value)" :show-button="false" v-model:value="formValue.options.ssh.port" placeholder="22"/>
+                  <n-form-item label="port" path="ssh.port">
+                    <n-input :disabled="!enableSSH" :allow-input="(value: string) => !value || /^\d+$/.test(value)" :show-button="false" v-model:value="formValue.options.ssh.port" placeholder="22"/>
                   </n-form-item>
                 </n-gi>
               </n-grid>
 
-              <n-form-item required label="username" path="formValue.options.ssh.username">
-                <n-input v-model:value="formValue.options.ssh.username" placeholder="username"/>
+              <n-form-item required label="username" path="options.ssh.username">
+                <n-input :disabled="!enableSSH" v-model:value="formValue.options.ssh.username" placeholder="username"/>
               </n-form-item>
-              <n-form-item  label="authType" path="formValue.options.ssh.authType">
-                <n-select default-value="password" :options="[{label:'password',value:'password'},{label:'privateKey',value:'privateKey'}]" v-model:value="formValue.options.ssh.authType" placeholder="authType"/>
+              <n-form-item  label="authType" >
+                <n-select :disabled="!enableSSH" default-value="password" :options="[{label:'password',value:'password'},{label:'privateKey',value:'privateKey'}]" v-model:value="formValue.options.ssh.authType"/>
               </n-form-item>
-              <n-form-item required v-if="formValue.options.ssh.authType === 'password'" label="password" path="formValue.options.ssh.password">
-                <n-input v-model:value="formValue.options.ssh.password" placeholder="password"/>
+              <n-form-item required v-if="formValue.options.ssh.authType === 'password'" label="password" path="options.ssh.password">
+                <n-input :disabled="!enableSSH" v-model:value="formValue.options.ssh.password" placeholder="password"/>
               </n-form-item>
-              <n-form-item required v-if="formValue.options.ssh.authType === 'privateKey'" label="privateKey" path="formValue.options.ssh.privateKey">
-                <n-input type="textarea" v-model:value="formValue.options.ssh.privateKey" placeholder="privateKey"/>
+              <n-form-item required v-if="formValue.options.ssh.authType === 'privateKey'" label="privateKey" path="options.ssh.privateKey">
+                <n-input :disabled="!enableSSH" type="textarea" v-model:value="formValue.options.ssh.privateKey" placeholder="privateKey"/>
               </n-form-item>
-              <n-form-item v-if="formValue.options.ssh.authType === 'privateKey'" label="passphrase" path="formValue.options.ssh.passphrase">
-                <n-input v-model:value="formValue.options.ssh.passphrase" placeholder="passphrase"/>
+              <n-form-item v-if="formValue.options.ssh.authType === 'privateKey'" label="passphrase" path="options.ssh.passphrase">
+                <n-input :disabled="!enableSSH" v-model:value="formValue.options.ssh.passphrase" placeholder="passphrase"/>
               </n-form-item>
-
             </div>
-          </div>
-        </div>
+          </n-tab-pane>
+
+        </n-tabs>
       </n-form>
     </div>
 
     <template #footer>
       <div class="flex justify-between">
         <div>
-          <n-button @click="connTest">Test</n-button>
+          <n-button ghost type="success" @click="connTest" :loading="testing">Test</n-button>
         </div>
         <div>
           <n-button @click="showModal=false">close</n-button>
-          <n-button class="ml-2" @click="handleValidateClick">submit</n-button>
+          <n-button type="primary" class="ml-2" @click="handleValidateClick">submit</n-button>
         </div>
       </div>
     </template>
@@ -163,7 +163,7 @@
 <script lang="ts">
 import {FormInst} from "naive-ui";
 import cloneDeep from 'lodash-es/cloneDeep'
-import {apijson,testConn} from "~/api/redis";
+import {apiJson,redis} from "~/api";
 
 export default {
   name: "AddConnectionModal",
@@ -193,9 +193,36 @@ export default {
 
     const formValue = ref(cloneDeep(defaultInfoValue) as Record<any, any>)
 
-    const rules = {
+    const enableSSH = computed(()=>{
+      return formValue.value.options.ssh.enable
+    })
+
+    const generialRules = {
       "title":[{required:true}]
     }
+
+    const sshRules = {
+      "options.ssh.host":[{required:true,message:"required"}],
+      "options.ssh.username":[{required:true,message:"required"}],
+    }
+
+    const rules = computed(()=>{
+      let rules:Record<string, any> = {
+        ...generialRules,
+      }
+      if(enableSSH.value){
+        Object.assign(rules, sshRules)
+        if(formValue.value.options.ssh.authType === "password"){
+          rules["options.ssh.password"] = [{required:true,message:"required"}]
+        }else{
+          rules["options.ssh.privateKey"] = [{required:true,message:"required"}]
+        }
+      }
+
+
+      return rules
+    })
+
 
     const typeRef = ref('')
 
@@ -206,12 +233,14 @@ export default {
       formRef.value?.validate((errors) => {
         if (!errors) {
 
-          let formInfo = cloneDeep(formValue.value)
-          formInfo.dbAlias = {}
-          formInfo.host = formInfo.host || "127.0.0.1"
-          formInfo.port = formInfo.port || "6379"
+          let formInfo = fillDefaultField(cloneDeep(formValue.value))
 
-          apijson.post({
+          let api = formInfo.id ? apiJson.put : apiJson.post
+          if(!formInfo.id){
+            formInfo.dbAlias = {}
+          }
+
+          api({
             tag:"RedisConnection",
             RedisConnection:formInfo
           }).then(()=>{
@@ -223,56 +252,65 @@ export default {
 
         } else {
           console.log(errors)
-          message.error('Invalid')
+          message.error('Form Invalid')
         }
       })
     }
 
-    let addFieldKey = ''
-    let oldData: Record<any, any> | undefined = {}
-
-    function open({type, key, data}: { type: string, key: string, data?: Record<any, any> }) {
-      showModal.value = true
-      typeRef.value = type
+    function open({id}: { id?: string }) {
       formValue.value = cloneDeep(defaultInfoValue)
-
-      oldData = {}
-      if (key) {
-        addFieldKey = key
-        if (data) {
-          Object.keys(data).forEach((k) => {
-            // @ts-ignore
-            formValue.value[k] = data[k]
-          })
-        }
-        oldData = data
-        // @ts-ignore
-        formValue.value["key"] = key
+      showModal.value = true
+      if(id){
+        apiJson.get({
+          "RedisConnection":{
+            id
+          }
+        }).then(data=>{
+          let connection = data.RedisConnection
+          formValue.value = {
+            id:id+"",
+            title:connection.title,
+            host:connection.host,
+            port:connection.port,
+            username:connection.username,
+            password:connection.password,
+            db:connection.db,
+            options:JSON.parse(connection.options),
+          }
+        })
       }
+
     }
 
 
+    const testing = ref(false)
     function connTest(){
-      let formInfo = cloneDeep(formValue.value)
-      formInfo.dbAlias = {}
-      formInfo.host = formInfo.host || "127.0.0.1"
-      formInfo.port = formInfo.port || "6379"
-
-
-      testConn(formInfo).then((ret)=>{
+      testing.value = true
+      let formInfo = fillDefaultField(cloneDeep(formValue.value))
+      redis.connTest(formInfo).then((ret)=>{
         message.success('Success')
       }).catch(err=>{
         message.error(err.msg)
+      }).finally(()=>{
+        testing.value = false
       })
     }
 
+    function fillDefaultField(info:Record<string, any>){
+      info.host = info.host || "127.0.0.1"
+      info.port = info.port || "6379"
+      if(info.options.ssh.enable){
+        info.options.ssh.port = info.options.ssh.port || "22"
+      }
+      return info
+    }
 
     return {
       open,
       showModal, rules, formValue, typeRef,
-      bodyStyle, segmented, formRef,
+      bodyStyle, segmented, formRef,enableSSH,
       handleValidateClick,
-      connTest
+      connTest,testing
     }
   }
 }

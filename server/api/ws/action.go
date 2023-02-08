@@ -29,3 +29,12 @@ var ActionMap = map[string]Action{}
 func RegAction(name string, action Action) {
 	ActionMap[name] = action
 }
+
+func Handler(ctx context.Context, req *Req, reply func(ctx context.Context, ret any, err error)) {
+	for k, action := range ActionMap {
+		if k == req.Action {
+			action(ctx, req, reply)
+			break
+		}
+	}
+}

@@ -3,5 +3,8 @@ dist
 config.yaml
 db.sqlite3
 temp
-packed
+packed/data.go
+cmd/desktop/frontend
+cmd/desktop/build/bin
 *.exe
+log

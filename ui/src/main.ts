@@ -1,3 +1,6 @@
+import "~/styles/tailwind.css";
+import "~/styles/main.css";
+
 import { useLocalStorage } from "@vueuse/core";
 import { createApp } from "vue";
 // Vue Router
@@ -9,8 +12,7 @@ import index from "./router";
 import { registerStore } from "./store";
 import App from "~/App.vue";
 
-import "~/styles/tailwind.css";
-import "~/styles/main.css";
+
 
 const app = createApp(App);
 const messages = Object.fromEntries(
@@ -25,6 +27,7 @@ app.use(createI18n({
   locale: unref(useLocalStorage("locale", "zh-CN")),
   messages,
 }));
+
 app.use(createPinia());
 registerStore();
 app.use(index);

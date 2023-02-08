@@ -2,7 +2,7 @@ package action
 
 import (
 	"context"
-	"github.com/glennliao/redisman/api/ws"
+	"github.com/glennliao/redisman/server/api/ws"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/redis/go-redis/v9"

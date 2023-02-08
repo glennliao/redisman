@@ -1,148 +1,155 @@
 <script setup lang="ts">
-import {Add} from '@vicons/ionicons5'
-import {apijson} from "~/api/redis";
-import {useInfo} from "~/views/redis/hook/conn";
+import {AddOutline, TrashOutline,CreateOutline} from "@vicons/ionicons5";
+import {apiJson} from "~/api";
+import {useConn} from "~/views/redis/hook/conn";
 import AddConnectionModal from "~/views/redis/components/AddConnectionModal.vue";
-const {connect} = useInfo()
 
-const connectionListRef = ref([])
+const {connect} = useConn();
 
+const connectionListRef = ref([]);
 
-const message = useMessage()
-const dialog = useDialog()
-function loadList(){
-  apijson.get({
-    "RedisConnection[]":{
+const message = useMessage();
+const dialog = useDialog();
 
-    }
-  }).then(data=>{
-    connectionListRef.value = data["RedisConnection[]"]
-  })
+function loadList() {
+  apiJson.get({
+    "RedisConnection[]": {},
+  }).then((data) => {
+    connectionListRef.value = data["RedisConnection[]"];
+    console.log(data, connectionListRef.value)
+  });
 }
-loadList()
-const router = useRouter()
 
+loadList();
+const router = useRouter();
 
-function connRedis(id:number){
-  showLoadingRef.value = true
-  connect(id).then(()=>{
-    router.push("/redis/conn?id="+id)
-  }).catch(err=>{
-    console.log(err)
+function connRedis(id: number) {
+  showLoadingRef.value = true;
+  connect(id).then(() => {
+    router.push(`/redis/conn?id=${id}`);
+  }).catch((err) => {
+    console.log(err);
     dialog.error({
-      title: 'err',
+      title: "err",
       content: err.msg,
-      positiveText: 'Ok'
-    })
-  }).finally(()=>{
-    showLoadingRef.value = false
-  })
+      positiveText: "Ok",
+    });
+  }).finally(() => {
+    showLoadingRef.value = false;
+  });
 }
 
-const addConnectionModalRef = ref(null) as any
+const addConnectionModalRef = ref(null) as any;
 
-function success(e:any){
-  console.log(e)
-  loadList()
+function success(e: any) {
+  console.log(e);
+  loadList();
 }
 
-function add(type: string) {
-
-  addConnectionModalRef.value && addConnectionModalRef.value.open({type})
+function add() {
+  addConnectionModalRef.value && addConnectionModalRef.value.open({});
 }
 
+const showLoadingRef = ref(false);
 
-const showLoadingRef = ref(false)
-
-function delConn(id:number){
-  console.log("del",id)
-  apijson.delete({
-    tag:"RedisConnection",
-    RedisConnection:{
-      id:id+""
-    }
-  }).then(()=>{
-    loadList()
-  })
+function delConn(id: number) {
+  console.log("del", id);
+  apiJson.delete({
+    tag: "RedisConnection",
+    RedisConnection: {
+      id: `${id}`,
+    },
+  }).then(() => {
+    loadList();
+  });
 }
 
-function updateConn(id:number){
-  console.log('update conn',id)
+function updateConn(id: number) {
+  addConnectionModalRef.value && addConnectionModalRef.value.open({id});
 }
-
-
 </script>
 
 <template>
-
   <n-spin :show="showLoadingRef">
-  <n-layout style="height: calc(100vh - 64px - 8px)" class="bg-base-100">
-
-    <div class="flex flex-wrap p-2">
-      <div v-for="conn in connectionListRef" :key="conn.id" class="conn-item cursor-pointer">
-        <n-card size="small" embedded :title="conn.title" hoverable    >
-          <div class="conn-content" @click="connRedis(conn.id)">
-            <div>
-              {{conn.host}}:{{conn.port}}
+    <n-layout style="height: calc(100vh - 64px - 16px)" class="bg-base-100">
+      <div class="flex flex-wrap p-2">
+        <div v-for="conn in connectionListRef" :key="conn.id" class="conn-item cursor-pointer">
+          <n-card size="small" embedded :title="conn.title" hoverable>
+            <div class="conn-content" @click="connRedis(conn.id)">
+              <div>
+                {{ conn.host }}:{{ conn.port }}
+              </div>
+              <div>
+                {{ conn.username }}
+              </div>
+              <div>
+                {{ conn.createdAt }}
+              </div>
             </div>
-            <div>
-              {{conn.username}} - {{conn.password}}
+            <template #header>
+              <div  @click="connRedis(conn.id)">
+                {{conn.title}}
+              </div>
+            </template>
+            <template #action>
+              <div class="text-center">
+                <n-button-group>
+                  <n-button size="small" round @click="updateConn(conn.id)">
+                    <template #icon>
+                      <n-icon><CreateOutline /></n-icon>
+                    </template>
+                  </n-button>
+                  <n-popconfirm
+                    @positive-click="delConn(conn.id)"
+                    @negative-click=""
+                  >
+                    <template #trigger>
+                      <n-button size="small" round >
+                        <template #icon>
+                          <n-icon >
+                            <TrashOutline/>
+                          </n-icon>
+                        </template>
+                      </n-button>
+                    </template>
+                    Del ?
+                  </n-popconfirm>
+                </n-button-group>
+              </div>
+            </template>
+          </n-card>
+        </div>
+        <div class="conn-item cursor-pointer">
+          <n-card embedded hoverable size="small" style="width: 160px" @click="add">
+            <div class="conn-content text-center">
+              <n-icon size="32">
+                <AddOutline/>
+              </n-icon>
             </div>
-
-            <div>
-              {{conn.createdAt}}
-            </div>
-          </div>
-          <template #action>
-            <n-button-group>
-<!--              <n-button ghost round @click="updateConn(conn.id)">-->
-<!--&lt;!&ndash;                <template #icon>&ndash;&gt;-->
-<!--&lt;!&ndash;                  <n-icon><log-in-icon /></n-icon>&ndash;&gt;-->
-<!--&lt;!&ndash;                </template>&ndash;&gt;-->
-<!--                Edit-->
-<!--              </n-button>-->
-
-              <n-button round @click="delConn(conn.id)">
-<!--                <template #icon>-->
-<!--                  <n-icon><log-in-icon /></n-icon>-->
-<!--                </template>-->
-                Del
-              </n-button>
-            </n-button-group>
-          </template>
-        </n-card>
+          </n-card>
+        </div>
       </div>
-      <div class="conn-item cursor-pointer">
-        <n-card embedded hoverable size="small"  @click="add" style="width: 160px">
-          <div class="conn-content text-center">
-            <n-icon size="32">
-              <Add />
-            </n-icon>
-          </div>
-        </n-card>
+    </n-layout>
+    <n-layout-footer>
+      <div
+        class="footer footer-center bottom-0 border-t border-base-100 bg-base-200 px-4 py-1 text-base-content opacity-90"
+        style="height: 32px;width:unset">
+        RedisMan v0.2.0
       </div>
-
-    </div>
-  </n-layout>
-  <n-layout-footer>
-    <div class="footer footer-center bottom-0 border-t border-base-100 bg-base-200 px-4 py-1 text-base-content opacity-90" style="height: 32px" >
-      RedisMan v0.1.0
-    </div>
-  </n-layout-footer>
-  <AddConnectionModal ref="addConnectionModalRef" @success="success"/>
+    </n-layout-footer>
+    <AddConnectionModal ref="addConnectionModalRef" @success="success"/>
   </n-spin>
 </template>
 
 <style scoped>
-.conn-item{
+.conn-item {
 
   margin: 6px;
   padding: 6px;
 }
 
-.conn-content{
+.conn-content {
   /*width: 160px;*/
   /*height: 160px;*/
 }
-
 </style>
