@@ -11,6 +11,7 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/guid"
+	"github.com/gorilla/websocket"
 	"sync"
 )
 
@@ -35,22 +36,18 @@ func Ws(r *ghttp.Request) {
 	for {
 		msgType, msg, err := conn.ReadMessage()
 		if err != nil {
-			//if e, ok := err.(net.Error); ok {
-			//	if e.Error() == "close 1001 (going away)" {
-			//		fmt.Println("close")
-			//	} else {
-			//		fmt.Println(e.Error())
-			//	}
-			//	break
-			//}
-			//panic(err)
-			break
+			if websocket.IsCloseError(err, websocket.CloseGoingAway) {
+				break
+			} else {
+				g.Log().Error(ctx, err)
+				break
+			}
 		}
 
 		var req ws.Req
 		err = gconv.Scan(msg, &req)
 		if err != nil {
-			panic(err)
+			g.Log().Error(ctx, err)
 			break
 		}
 

@@ -1,25 +1,47 @@
 import { computed } from "vue";
 import { redis } from "~/api";
 
-const keys = ref([]);
+const keys = ref([] as string[]);
 const cursor = ref(0);
 
 const treeKeys = computed(() => buildKeysTree(keys.value));
+const count = 20000
 
-function scan(pattern = "*") {
-  redis.command([
-    ["scan", `${cursor.value}`, "MATCH", pattern, "COUNT", "10000"],
-  ]).then((data) => {
-    keys.value = data[0][1].sort();
-  });
+function _scan(pattern = "*",cur:string): Promise<string[]> {
+  return redis.command([
+    ["scan", cur, "MATCH", pattern, "COUNT", count+""],
+  ])
+    //.then((data) => {
+    // cursor.value = data[0][0]
+    // console.log(data)
+    // return data[0][1].sort();
+  //});
 }
 
-function scanKeys(pattern = "*"): Promise<string[]> {
-  return redis.command([
-    ["scan", `${cursor.value}`, "MATCH", pattern, "COUNT", "10000"],
-  ]).then((data) => {
-    return data[0][1].sort();
-  });
+
+async function scan(pattern = "*") {
+
+  keys.value = []
+  let cursor = "0"
+  let _keys:string[] = []
+
+  // do {
+  //   let data = await _scan(pattern, cursor)
+  //   cursor = data[0][0]
+  //   _keys = _keys.concat(data[0][1])
+  //   keys.value = _keys.sort()
+  // }while (cursor != "0")
+
+  let data = await _scan(pattern, cursor)
+  cursor = data[0][0]
+  _keys = _keys.concat(data[0][1])
+  keys.value = _keys.sort()
+
+}
+
+
+function scanKeys(pattern = "*",cur:string): Promise<string[]> {
+  return _scan(pattern,"0")
 }
 
 export function useKeysHook() {

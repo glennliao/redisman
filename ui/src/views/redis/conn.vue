@@ -7,10 +7,11 @@ import { useKeysHook } from "./hook/keys";
 import { typesOptions } from "~/views/redis/redis_types";
 
 import Key from "~/views/redis/key.vue";
-import { useConn } from "~/views/redis/hook/conn";
-import AddValueModal from "~/views/redis/components/AddValueModal.vue";
-import { useValueHook } from "~/views/redis/hook/value";
-import RedisConnSettingModal from "~/views/redis/components/RedisConnSettingModal.vue";
+import { useConn } from "./hook/conn";
+import { useValueHook } from "./hook/value";
+import AddValueModal from "./components/AddValueModal.vue";
+import RedisConnSettingModal from "./components/RedisConnSettingModal.vue";
+import RedisInfoModal from "./components/RedisConnInfoModal.vue";
 
 const route = useRoute();
 
@@ -256,8 +257,12 @@ function keysRenderLabel({ option }: { option: TreeOption }) {
 }
 
 const redisConnSettingModalRef = ref(null);
+const redisInfoModalRef = ref(null);
 function setting() {
   redisConnSettingModalRef.value && redisConnSettingModalRef.value.open();
+}
+function redisInfo() {
+  redisInfoModalRef.value && redisInfoModalRef.value.open();
 }
 function redisConnSettingSuccess() {
 
@@ -359,15 +364,30 @@ const exactMatch = ref(false)
       style="height: 32px; padding: 4px 12px"
       bordered
     >
-      <div>
-        {{ connMeta.title }} <n-icon class="cursor-pointer pt-0.5" :size="12" @click="setting">
-          <SettingsOutline />
-        </n-icon>
-      </div>
+      <n-grid cols="24">
+        <n-gi :span="4">
+          <text>
+            {{ connMeta.title }}
+          </text>
+          <n-icon class="cursor-pointer align-middle  ml-1" :size="14" @click="setting">
+            <SettingsOutline />
+          </n-icon>
+        </n-gi>
+        <n-gi :span="4">
+          <div class="cursor-pointer" @click="redisInfo">
+            <n-divider vertical />
+            <text title="used_memory_human">MEM: {{info.Memory.used_memory_human}}</text>
+            <text class="ml-3" title="connected_clients">CN: {{info.Clients.connected_clients}}</text>
+          </div>
+        </n-gi>
+
+      </n-grid>
+
     </n-layout-footer>
   </n-layout>
 
   <RedisConnSettingModal ref="redisConnSettingModalRef" @success="redisConnSettingSuccess" />
+  <RedisInfoModal ref="redisInfoModalRef"/>
 </template>
 
 <style>

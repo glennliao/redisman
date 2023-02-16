@@ -26,7 +26,7 @@
 - [ ] 运行lua脚本
 - [ ] 宏操作?
 - [ ] 哨兵, 集群连接
-- [ ] 状态监控
+- [x] 状态监控
 - [ ] 命令行模式
 - [ ] 内存分析
 - [ ] 标签分组
@@ -44,6 +44,16 @@
 
 
 ## log
+
+- 0.5.0 (?)
+  - support lua
+
+- 0.4.0 (?)
+  - support cli
+
+- 0.3.0 (2023-02-16) :
+  - support redis info
+
 - 0.2.0 (2023-02-13) :
     - support edit/test connection
     - support json editor

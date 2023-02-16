@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/glennliao/apijson-go/action"
 	"github.com/glennliao/apijson-go/config"
-	"github.com/glennliao/apijson-go/query"
+	"github.com/glennliao/apijson-go/framework/handler"
+	"github.com/glennliao/apijson-go/model"
 	"github.com/glennliao/redisman/server"
 	"github.com/glennliao/redisman/server/api/ws"
 	"github.com/gogf/gf/v2/encoding/gjson"
@@ -12,7 +12,6 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/gogf/gf/v2/util/guid"
-	"net/http"
 )
 
 // App struct
@@ -85,19 +84,19 @@ type HttpRes struct {
 
 func (a *App) Http(req HttpReq) HttpRes {
 	res := HttpRes{Code: 200, Data: req.Data}
-	var handler func(ctx context.Context, p g.Map) (g.Map, error)
+	var httpHandler func(ctx context.Context, p model.Map) (model.Map, error)
 	switch req.Url {
 	case "/get":
-		handler = Get
+		httpHandler = handler.Get
 	case "/post":
-		handler = Post
+		httpHandler = handler.Post
 	case "/put":
-		handler = Put
+		httpHandler = handler.Put
 	case "/delete":
-		handler = Delete
+		httpHandler = handler.Delete
 	}
 
-	data, err := handler(a.ctx, req.Data.Map())
+	data, err := httpHandler(a.ctx, req.Data.Map())
 	if err != nil {
 		res.Code = 500
 		res.Msg = err.Error()
@@ -106,30 +105,4 @@ func (a *App) Http(req HttpReq) HttpRes {
 		res.Data = data
 	}
 	return res
-}
-
-func Get(ctx context.Context, req g.Map) (res g.Map, err error) {
-	q := query.New(ctx, req)
-	q.AccessVerify = config.AccessVerify
-	q.AccessCondition = config.AccessConditionFunc
-	return q.Result()
-}
-
-func Head(ctx context.Context, req g.Map) (res g.Map, err error) {
-	return nil, err
-}
-
-func Post(ctx context.Context, req g.Map) (res g.Map, err error) {
-	act := action.New(ctx, http.MethodPost, req)
-	return act.Result()
-}
-
-func Put(ctx context.Context, req g.Map) (res g.Map, err error) {
-	act := action.New(ctx, http.MethodPut, req)
-	return act.Result()
-}
-
-func Delete(ctx context.Context, req g.Map) (res g.Map, err error) {
-	act := action.New(ctx, http.MethodDelete, req)
-	return act.Result()
 }

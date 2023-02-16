@@ -22,6 +22,7 @@
     "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
+    "@antv/g2plot": "^2.4.25",
     "@codemirror/lang-json": "^6.0.1",
     "@codemirror/theme-one-dark": "^6.1.0",
     "@types/uuid": "^9.0.0",
