@@ -15,14 +15,19 @@ func init() {
 
 func RedisTest(ctx context.Context, req *ws.Req, reply func(ctx context.Context, ret any, err error)) {
 
+	tempReq := &ws.Req{
+		Params: req.Params,
+		User:   &ws.User{},
+	}
+
 	var connection *model.RedisConnectionGet
-	err := gjson.New(req.Params).Scan(&connection)
+	err := gjson.New(tempReq.Params).Scan(&connection)
 	if err != nil {
-		reply(ctx, nil, gerror.Cause(err))
+		reply(ctx, nil, gerror.Wrap(err, "req scan"))
 		return
 	}
 
-	client, err := getRedisClientByConfig(ctx, connection)
+	client, err := getRedisClientByConfig(ctx, tempReq, connection)
 
 	if err != nil {
 		reply(ctx, nil, err)
@@ -31,6 +36,9 @@ func RedisTest(ctx context.Context, req *ws.Req, reply func(ctx context.Context,
 
 	defer func() {
 		client.Close()
+		if tempReq.User.LocalListener != nil {
+			tempReq.User.LocalListener.Close()
+		}
 	}()
 
 	reply(ctx, g.Map{}, nil)

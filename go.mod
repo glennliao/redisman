@@ -1,22 +1,21 @@
 module github.com/glennliao/redisman
 
-go 1.19
+go 1.18
 
 require (
-	github.com/glennliao/apijson-go v0.1.0
-	github.com/glennliao/table-sync v0.0.0
+	github.com/glennliao/apijson-go v0.1.1-0.20230221020949-c303379becc2
+	github.com/glennliao/table-sync v0.2.0
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.3.2
 	github.com/gogf/gf/contrib/drivers/sqlite/v2 v2.3.2
 	github.com/gogf/gf/v2 v2.3.2
+	github.com/gorilla/websocket v1.5.0
 	github.com/redis/go-redis/v9 v9.0.2
 	github.com/samber/lo v1.37.0
 	github.com/wailsapp/wails/v2 v2.3.1
 	golang.org/x/crypto v0.6.0
 )
 
-replace github.com/glennliao/table-sync => ../table-sync
-
-replace github.com/glennliao/apijson-go => ../apijson-go
+//replace github.com/glennliao/apijson-go => ../apijson-go
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
@@ -33,7 +32,6 @@ require (
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/grokify/html-strip-tags-go v0.0.1 // indirect
 	github.com/iancoleman/orderedmap v0.2.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect

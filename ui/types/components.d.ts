@@ -54,6 +54,7 @@ declare module '@vue/runtime-core' {
     NTag: typeof import('naive-ui')['NTag']
     NThing: typeof import('naive-ui')['NThing']
     NTree: typeof import('naive-ui')['NTree']
+    NUpload: typeof import('naive-ui')['NUpload']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ThemeChange: typeof import('./../src/components/layout/Navbar/components/ThemeChange/index.vue')['default']

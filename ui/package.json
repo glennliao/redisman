@@ -37,12 +37,16 @@
     "nprogress": "^0.2.0",
     "pinia": "^2.0.28",
     "redis-info": "^3.1.0",
+    "redis-splitargs": "^1.0.1",
     "rxjs": "^7.8.0",
     "uuid": "^9.0.0",
     "vue": "^3.2.45",
     "vue-codemirror": "^6.1.1",
     "vue-i18n": "^9.2.2",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue-web-terminal": "3",
+    "xterm": "^5.1.0",
+    "xterm-addon-fit": "^0.7.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.3.0",

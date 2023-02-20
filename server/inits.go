@@ -13,7 +13,9 @@ import (
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/samber/lo"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 )
 
 func Init() {
@@ -44,6 +46,9 @@ func InitConfig() {
         link = "sqlite::@file(./db.sqlite3)"
 
 	`
+
+	configContent = strings.ReplaceAll(configContent, "./db.sqlite3", path.Join(homeDir, "/.config/redisman/db.sqlite3"))
+	configContent = strings.ReplaceAll(configContent, "\\", "/")
 
 	fileAdapter := g.Cfg().GetAdapter().(*gcfg.AdapterFile)
 	fileAdapter.AddPath(gfile.Dir(configPath))

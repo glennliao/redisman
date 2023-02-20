@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { DropdownOption, SelectOption, TreeOption } from "naive-ui";
-import { Add, Refresh, Search, Settings, SettingsOutline } from "@vicons/ionicons5";
+import { Add, Refresh, Search, Settings, SettingsOutline,TerminalOutline } from "@vicons/ionicons5";
 import type { Ref } from "vue";
 import { useKeysHook } from "./hook/keys";
 
@@ -12,6 +12,7 @@ import { useValueHook } from "./hook/value";
 import AddValueModal from "./components/AddValueModal.vue";
 import RedisConnSettingModal from "./components/RedisConnSettingModal.vue";
 import RedisInfoModal from "./components/RedisConnInfoModal.vue";
+import RedisCliModal from "./components/RedisCliModal.vue";
 
 const route = useRoute();
 
@@ -258,12 +259,19 @@ function keysRenderLabel({ option }: { option: TreeOption }) {
 
 const redisConnSettingModalRef = ref(null);
 const redisInfoModalRef = ref(null);
+const redisCliModalRef = ref(null);
 function setting() {
   redisConnSettingModalRef.value && redisConnSettingModalRef.value.open();
 }
 function redisInfo() {
   redisInfoModalRef.value && redisInfoModalRef.value.open();
 }
+
+
+function cli(){
+  redisCliModalRef.value && redisCliModalRef.value.open();
+}
+
 function redisConnSettingSuccess() {
 
 }
@@ -380,6 +388,18 @@ const exactMatch = ref(false)
             <text class="ml-3" title="connected_clients">CN: {{info.Clients.connected_clients}}</text>
           </div>
         </n-gi>
+        <n-gi :span="1"></n-gi>
+        <n-gi :span="4">
+          <div class="flex">
+            <n-divider vertical />
+            <div class="cursor-pointer" @click="cli">
+              <n-icon class=" align-middle  ml-1" :size="14">
+                <TerminalOutline />
+              </n-icon>
+              Terminal
+            </div>
+          </div>
+        </n-gi>
 
       </n-grid>
 
@@ -388,6 +408,7 @@ const exactMatch = ref(false)
 
   <RedisConnSettingModal ref="redisConnSettingModalRef" @success="redisConnSettingSuccess" />
   <RedisInfoModal ref="redisInfoModalRef"/>
+  <RedisCliModal ref="redisCliModalRef"/>
 </template>
 
 <style>

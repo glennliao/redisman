@@ -3,23 +3,17 @@ package action
 import (
 	"context"
 	"github.com/glennliao/redisman/server/api/ws"
-	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/redis/go-redis/v9"
 )
 
 func init() {
-	ws.RegAction("redisCom", Command)
+	ws.RegAction("redisCliCom", CliCommand)
 }
 
-func Command(ctx context.Context, req *ws.Req, reply func(ctx context.Context, ret any, err error)) {
+func CliCommand(ctx context.Context, req *ws.Req, reply func(ctx context.Context, ret any, err error)) {
 
 	var rdb = req.User.RedisClient
-
-	if rdb == nil {
-		return
-	}
-
 	pipe := rdb.Pipeline()
 
 	var commands [][]any
@@ -38,17 +32,19 @@ func Command(ctx context.Context, req *ws.Req, reply func(ctx context.Context, r
 	}
 
 	if _, err = pipe.Exec(ctx); nil != err {
-		g.Log().Warning(ctx, commands)
-		g.Log().Error(ctx, err)
-		reply(ctx, rets, err)
-		return
+		//g.Log().Warning(ctx, commands)
+		//g.Log().Error(ctx, err)
+		//reply(ctx, rets, err)
+		//return
 	}
 
 	for i := 0; i < len(retCmd); i++ {
 		ret, err := retCmd[i].Result()
 
 		if nil != err {
-			panic(err)
+			//panic(err)
+			reply(ctx, []string{err.Error()}, nil)
+			continue
 		}
 
 		if v, ok := ret.(map[any]any); ok {

@@ -1,8 +1,7 @@
-import { computed } from "vue";
-import { redis } from "~/api";
+import {computed} from "vue";
+import {redis} from "~/api";
 
 const keys = ref([] as string[]);
-const cursor = ref(0);
 
 const treeKeys = computed(() => buildKeysTree(keys.value));
 const count = 20000
@@ -86,7 +85,7 @@ function buildKeysTree(keys: string[], splitStr = ":") {
 
 
 
-  let treeKeys = toTree(pList.map((k: string) => {
+  return toTree(pList.map((k: string) => {
     const splits = k.split(splitStr);
     let parentId = "root";
     let label = k;
@@ -96,11 +95,9 @@ function buildKeysTree(keys: string[], splitStr = ":") {
     }
     label = splits[splits.length - 2];
     return {
-      key: 'pid_'+k, label, parentId:'pid_'+parentId, leaf: false,
+      key: 'pid_' + k, label, parentId: 'pid_' + parentId, leaf: false,
     };
-  }).concat(keyList), "pid_root");
-
-  return treeKeys
+  }).concat(keyList), "pid_root")
 }
 
 interface TreeNode {

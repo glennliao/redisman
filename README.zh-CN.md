@@ -1,8 +1,5 @@
 # RedisMan [WIP]
 
-> v0.2.0 由于使用replace导入了本地库, 故无法clone本库进行编译。 可在版本release中下载使用
-
-
 ## 特征
 - webui / desktop
 - 支持 stream(redis6.0), username(6.0), bitmap, json [WIP]
@@ -22,13 +19,13 @@
 - [ ] redis json 
 - [x] 多连接
 - [ ] 多用户,多角色, 限制用户只读模式
-- [ ] ssh,ssl 连接
+- [x] ssh,tls 连接
 - [ ] 只读模式操作
 - [ ] 运行lua脚本
 - [ ] 宏操作?
 - [ ] 哨兵, 集群连接
 - [x] 状态监控
-- [ ] 命令行模式
+- [x] terminal mode / 命令行模式
 - [ ] 内存分析
 - [ ] 标签分组
 - [ ] 主题, i18n, 
@@ -48,8 +45,9 @@
 - 0.5.0 (?)
   - support lua
 
-- 0.4.0 (?)
-  - support cli
+- 0.4.0 (2023-02-21)
+  - support terminal
+  - support tls
 
 - 0.3.0 (2023-02-16) :
   - support redis info

@@ -4,6 +4,9 @@ export const redis = {
   command: (commands: string[][]): Promise<any> => {
     return action({ action: "redisCom", params: commands });
   },
+  cliCommand: (commands: string[][]): Promise<any> => {
+    return action({ action: "redisCliCom", params: commands });
+  },
   connTest: (connConfig: any) => {
     return action({ action: "redisConnTest", params: connConfig });
   },

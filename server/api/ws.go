@@ -53,22 +53,26 @@ func Ws(r *ghttp.Request) {
 
 		req.User = &user
 
-		ws.Handler(ctx, &req, func(ctx context.Context, ret any, err error) {
-			var retMap = map[string]any{
-				"id":   req.Id,
-				"data": ret,
-				"code": 200,
-			}
+		go g.TryCatch(ctx, func(ctx context.Context) {
+			ws.Handler(ctx, &req, func(ctx context.Context, ret any, err error) {
+				var retMap = map[string]any{
+					"id":   req.Id,
+					"data": ret,
+					"code": 200,
+				}
 
-			if err != nil {
-				retMap["code"] = 500
-				retMap["msg"] = err.Error()
-				g.Log().Error(ctx, err)
-			}
+				if err != nil {
+					retMap["code"] = 500
+					retMap["msg"] = err.Error()
+					g.Log().Error(ctx, err)
+				}
 
-			if err = conn.WriteMessage(msgType, gjson.New(retMap).MustToJson()); err != nil {
-				return
-			}
+				if err = conn.WriteMessage(msgType, gjson.New(retMap).MustToJson()); err != nil {
+					return
+				}
+			})
+		}, func(ctx context.Context, exception error) {
+			g.Log().Error(ctx, exception)
 		})
 	}
 

@@ -134,10 +134,84 @@
                 <n-input :disabled="!enableSSH" v-model:value="formValue.options.ssh.password" placeholder="password"/>
               </n-form-item>
               <n-form-item required v-if="formValue.options.ssh.authType === 'privateKey'" label="privateKey" path="options.ssh.privateKey">
-                <n-input :disabled="!enableSSH" type="textarea" v-model:value="formValue.options.ssh.privateKey" placeholder="privateKey"/>
+                <n-input-group>
+                  <n-input :disabled="!enableSSH" type="textarea" v-model:value="formValue.options.ssh.privateKey" placeholder="privateKey" />
+                  <div class="flex items-center " style="background: rgb(250, 250, 252)">
+                    <n-upload
+                      :show-file-list="false"
+                      @change="chooseFile('ssh.privateKey',$event)"
+                    >
+                      <n-button ghost :bordered="false"><n-icon>
+                        <CloudUploadOutline/>
+                      </n-icon></n-button>
+                    </n-upload>
+                  </div>
+                </n-input-group>
+
               </n-form-item>
               <n-form-item v-if="formValue.options.ssh.authType === 'privateKey'" label="passphrase" path="options.ssh.passphrase">
                 <n-input :disabled="!enableSSH" v-model:value="formValue.options.ssh.passphrase" placeholder="passphrase"/>
+              </n-form-item>
+            </div>
+          </n-tab-pane>
+          <n-tab-pane name="tls" tab="TLS" display-directive="show">
+            <template #tab>
+              TLS
+              <n-badge class="ml-1" size="small" :dot="enableTLS" type="info"/>
+            </template>
+            <n-switch v-model:value="formValue.options.tls.enable">
+              <template #checked>
+                TLS
+              </template>
+              <template #unchecked>
+                TLS
+              </template>
+            </n-switch>
+            <div class="mt-4">
+              <n-form-item  label="private key(key)" path="options.tls.key">
+                <n-input-group>
+                  <n-input :disabled="!enableTLS" type="textarea" v-model:value="formValue.options.tls.key" placeholder="key" />
+                  <div class="flex items-center " style="background: rgb(250, 250, 252)">
+                    <n-upload
+                      :show-file-list="false"
+                      @change="chooseFile('tls.key',$event)"
+                    >
+                      <n-button ghost :bordered="false"><n-icon>
+                        <CloudUploadOutline/>
+                      </n-icon></n-button>
+                    </n-upload>
+                  </div>
+                </n-input-group>
+              </n-form-item>
+              <n-form-item label="public key(cert)" path="options.tls.cert">
+                <n-input-group>
+                  <n-input :disabled="!enableTLS" type="textarea" v-model:value="formValue.options.tls.cert" placeholder="cert" />
+                  <div class="flex items-center " style="background: rgb(250, 250, 252)">
+                    <n-upload
+                      :show-file-list="false"
+                      @change="chooseFile('tls.cert',$event)"
+                    >
+                      <n-button ghost :bordered="false"><n-icon>
+                        <CloudUploadOutline/>
+                      </n-icon></n-button>
+                    </n-upload>
+                  </div>
+                </n-input-group>
+              </n-form-item>
+              <n-form-item label="Certificate Authority(CA)" path="options.tls.ca">
+                <n-input-group>
+                  <n-input :disabled="!enableTLS" type="textarea" v-model:value="formValue.options.tls.ca" placeholder="ca" />
+                  <div class="flex items-center " style="background: rgb(250, 250, 252)">
+                    <n-upload
+                      :show-file-list="false"
+                      @change="chooseFile('tls.ca',$event)"
+                    >
+                      <n-button ghost :bordered="false"><n-icon>
+                        <CloudUploadOutline/>
+                      </n-icon></n-button>
+                    </n-upload>
+                  </div>
+                </n-input-group>
               </n-form-item>
             </div>
           </n-tab-pane>
@@ -164,10 +238,11 @@
 import {FormInst} from "naive-ui";
 import cloneDeep from 'lodash-es/cloneDeep'
 import {apiJson,redis} from "~/api";
-
+import {CloudUploadOutline} from '@vicons/ionicons5'
 export default {
   name: "AddConnectionModal",
   emits: ["success"],
+  components:{CloudUploadOutline},
   setup(_: any, {emit}: any) {
 
     const showModal = ref(false)
@@ -187,6 +262,9 @@ export default {
         ssh:{
           enable:false,
           authType:"password"
+        },
+        tls:{
+          enable:false
         }
       }
     }
@@ -195,6 +273,9 @@ export default {
 
     const enableSSH = computed(()=>{
       return formValue.value.options.ssh.enable
+    })
+    const enableTLS = computed(()=>{
+      return formValue.value.options.tls?.enable
     })
 
     const generialRules = {
@@ -247,6 +328,7 @@ export default {
             message.success('Success')
             showModal.value = false
             formValue.value = cloneDeep(defaultInfoValue)
+
             emit("success")
           })
 
@@ -267,6 +349,13 @@ export default {
           }
         }).then(data=>{
           let connection = data.RedisConnection
+          connection.options = JSON.parse(connection.options)
+          console.log(connection.options)
+          // @ts-ignore
+          connection.options.tls = connection.options.tls || {
+            enable:false
+          }
+          console.log(connection.options)
           formValue.value = {
             id:id+"",
             title:connection.title,
@@ -275,7 +364,7 @@ export default {
             username:connection.username,
             password:connection.password,
             db:connection.db,
-            options:JSON.parse(connection.options),
+            options:connection.options,
           }
         })
       }
@@ -305,12 +394,40 @@ export default {
       return info
     }
 
+    function chooseFile(forItem:string,e){
+      let file = e.file.file;
+      let reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = function() {
+        switch (forItem){
+          case "ssh.privateKey":
+            formValue.value.options.ssh.privateKey = reader.result
+            break
+          case "tls.key":
+            formValue.value.options.tls.key = reader.result
+            break
+          case "tls.cert":
+            formValue.value.options.tls.cert = reader.result
+            break
+          case "tls.ca":
+            formValue.value.options.tls.ca = reader.result
+            break
+        }
+
+      };
+
+      reader.onerror = function() {
+        console.log(reader.error);
+      };
+    }
+
     return {
       open,
       showModal, rules, formValue, typeRef,
-      bodyStyle, segmented, formRef,enableSSH,
+      bodyStyle, segmented, formRef,enableSSH,enableTLS,
       handleValidateClick,
-      connTest,testing
+      connTest,testing,
+      chooseFile
     }
   }
 }

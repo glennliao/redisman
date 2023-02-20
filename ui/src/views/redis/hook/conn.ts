@@ -80,7 +80,7 @@ function status(){
   });
 }
 
-let statusTimer = null
+let statusTimer:any = null
 
 function connect(id: number) {
   return redis.conn({ id }).then((data) => {
@@ -89,9 +89,19 @@ function connect(id: number) {
     connected.value = true;
     select(curDb.value);
     status()
+    if(statusTimer !== null){
+      clearInterval(statusTimer)
+      statusTimer = null
+    }
     statusTimer = setInterval(()=>{
       status()
     }, 5* 1000)
+  }).catch((err)=>{
+    if(statusTimer !== null){
+      clearInterval(statusTimer)
+      statusTimer = null
+    }
+    throw err
   });
 }
 

@@ -13,8 +13,16 @@ type SSH struct {
 	Passphrase string
 }
 
+type TLS struct {
+	Enable bool
+	Cert   string
+	Key    string
+	Ca     string
+}
+
 type Options struct {
 	Ssh SSH
+	Tls TLS
 }
 
 type RedisConnectionGet struct {
