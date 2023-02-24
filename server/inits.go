@@ -22,6 +22,11 @@ func Init() {
 	InitConfig()
 	initDb()
 	framework.Init()
+
+	//if gfile.Exists(action.UpgradeTempWaitDelFile) {
+	//	gfile.Remove(action.UpgradeTempWaitDelFile)
+	//}
+
 }
 
 func InitConfig() {

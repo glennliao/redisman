@@ -41,6 +41,10 @@ async function scan(pattern = "*") {
 
 function scanKeys(pattern = "*",cur:string): Promise<string[]> {
   return _scan(pattern,"0")
+  .then((data) => {
+    // @ts-ignore
+    return data[0][1].sort();
+  });
 }
 
 export function useKeysHook() {

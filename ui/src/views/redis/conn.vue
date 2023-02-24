@@ -130,14 +130,19 @@ async function handleSelect(e: string) {
       } else {
 
         let k = contextMenuSelectedKey.value
-        k = k.substring(4)
+
+        console.log(k)
+        if(k.startsWith("pid_e:")){
+          k = k.substring(4)
+        }
         if (contextMenuSelectedKeyIsLeaf.value) {
           delKeys = [k];
         } else {
           delKeys = await scanKeys(`${k}*`);
-
         }
       }
+
+      console.log(delKeys)
 
       if (delKeys.length) {
         del({

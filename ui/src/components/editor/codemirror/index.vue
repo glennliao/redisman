@@ -32,7 +32,8 @@ export default defineComponent({
   props:{
     value:{
 
-    }
+    },
+    contentMode:{}
   },
   setup(props,{emit}) {
     const code = ref(``)
@@ -47,6 +48,8 @@ export default defineComponent({
     watch(()=>props.value,(val)=>{
       code.value = val
     },{immediate:true})
+
+
 
 
 
@@ -77,6 +80,9 @@ export default defineComponent({
       return {
         value:item,label:item
       }
+    })
+    watch(()=>props.contentMode, (val)=>{
+      viewMode.value = val
     })
 
     watch(()=>viewMode.value,()=>{

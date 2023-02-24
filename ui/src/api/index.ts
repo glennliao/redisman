@@ -21,3 +21,8 @@ export const apiJson = {
   put: (p: Record<string, any>) => http("/put", "POST", p),
   delete: (p: Record<string, any>) => http("/delete", "POST", p),
 };
+
+
+export const checkVersion = ()=>{
+  return action({action:"check-version"})
+}

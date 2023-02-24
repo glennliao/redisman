@@ -3,6 +3,7 @@ import {AddOutline, TrashOutline,CreateOutline} from "@vicons/ionicons5";
 import {apiJson} from "~/api";
 import {useConn} from "~/views/redis/hook/conn";
 import AddConnectionModal from "~/views/redis/components/AddConnectionModal.vue";
+import VersionInfoModal from "~/views/redis/components/VersionInfoModal.vue";
 
 const {connect} = useConn();
 
@@ -67,6 +68,8 @@ function delConn(id: number) {
 function updateConn(id: number) {
   addConnectionModalRef.value && addConnectionModalRef.value.open({id});
 }
+
+
 </script>
 
 <template>
@@ -134,7 +137,8 @@ function updateConn(id: number) {
       <div
         class="footer footer-center bottom-0 border-t border-base-100 bg-base-200 px-4 py-1 text-base-content opacity-90"
         style="height: 32px;width:unset">
-        RedisMan v0.2.0
+
+      <version-info-modal/>
       </div>
     </n-layout-footer>
     <AddConnectionModal ref="addConnectionModalRef" @success="success"/>
@@ -143,7 +147,6 @@ function updateConn(id: number) {
 
 <style scoped>
 .conn-item {
-
   margin: 6px;
   padding: 6px;
 }

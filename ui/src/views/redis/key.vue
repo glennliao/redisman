@@ -6,9 +6,11 @@
         <n-input-group-label size="small">Key</n-input-group-label>
         <n-input size="small" v-model:value="keyVal">
           <template #suffix>
-            <n-icon title="save" class="cursor-pointer" @click="changeKey">
-              <SaveOutline/>
-            </n-icon>
+            <n-button ghost text size="small" @click="changeKey">rename</n-button>
+<!--            <n-icon title="save" class="cursor-pointer" @click="changeKey">-->
+<!--&lt;!&ndash;              <SaveOutline/>&ndash;&gt;-->
+<!--              rename-->
+<!--            </n-icon>-->
           </template>
         </n-input>
       </n-input-group>
@@ -16,14 +18,18 @@
     <n-gi span="24 320:16 560:8">
       <n-input-group>
         <n-input-group-label size="small">TTL</n-input-group-label>
-        <n-input-number size="small" :show-button="false" v-model:value="ttlVal">
+        <n-input-number style="--n-padding-right:0 !important;" size="small" :show-button="false" v-model:value="ttlVal">
           <template #suffix>
-            <div title="forever" class="cursor-pointer" @click="changeTTL('-')">
-              X
-            </div>
-            <n-icon title="save" class="cursor-pointer ml-2" @click="changeTTL">
-              <SaveOutline/>
-            </n-icon>
+            <n-button  size="small" title="forever" class="cursor-pointer" @click="changeTTL('-')">
+              clear
+            </n-button>
+<!--            <n-input-group-label size="small">change</n-input-group-label>-->
+            <n-button text size="small" class="ml-2" @click="changeTTL()">
+              save
+            </n-button>
+<!--            <n-icon title="save" class="cursor-pointer ml-2" @click="changeTTL">-->
+<!--              <SaveOutline/>-->
+<!--            </n-icon>-->
           </template>
         </n-input-number>
       </n-input-group>
@@ -316,7 +322,13 @@ function saveVal(val){
 }
 
 function changeTTL(v){
+
   let ttl = v || ttlVal.value
+  console.log(ttl)
+  if (ttl == -1){
+    message.warning("-1为删除key,如清除有效期请点击clear")
+    return
+  }
   if (ttl !== "-"){
     expire(props.curKey, ttl).then(()=>{
       message.success("Success")

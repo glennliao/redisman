@@ -1,0 +1,147 @@
+name: CI Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Setup pnpm
+        run: npm install -g pnpm
+
+      - name: Build
+        run: |
+          cd ui && pnpm i && pnpm run build
+
+      - name: Upload frontend build
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-artifact
+          path: ./ui/dist
+
+
+  server-build:
+    runs-on: ubuntu-latest
+    needs: frontend-build
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+          cache: true
+
+      - name: Setup GF
+        run: wget -O gf https://github.com/gogf/gf/releases/latest/download/gf_$(go env GOOS)_$(go env GOARCH) && chmod +x gf && ./gf install -y && rm ./gf
+
+      - name: Download frontend build
+        uses: actions/download-artifact@v3
+        with:
+            name: frontend-artifact
+            path: ./ui/dist
+
+      - name: Build
+        run: |
+          gf pack ./ui/dist ./cmd/server/packed/dist.go
+          ls ./cmd/server/packed
+          ls ./ui/dist
+          go run build.go
+          cat ./temp/changelog.md
+          mv ./temp/changelog.md ./build/changelog.md
+          
+
+      - name: Upload server build
+        uses: actions/upload-artifact@v3
+        with:
+          name: server-artifact
+          path: |
+            ./build/*
+
+  desktop-build:
+    strategy:
+      matrix:
+        go-version: [ 1.19 ]
+        platform: [windows-latest]
+#        platform: [ macos-latest, windows-latest, ubuntu-latest ]
+    runs-on: ${{matrix.platform}}
+    needs: frontend-build
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Download frontend build
+        uses: actions/download-artifact@v3
+        with:
+          name: frontend-artifact
+          path: ./cmd/desktop/dist
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{matrix.go-version}}
+          cache: true
+
+      - run: |
+          go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Build package windows
+        if: matrix.platform == 'windows-latest'
+        run: |
+          cd ./cmd/desktop
+          # wails doctor
+          wails build -s -ldflags '-s -w'
+          dir
+          cd ../../
+          mkdir ./build
+          go run build.go zip ./cmd/desktop/build/bin/RedisMan.exe ./build
+          dir
+
+      - name: Upload desktop build
+        uses: actions/upload-artifact@v3
+        with:
+          name: desktop-artifact
+          path: |
+            ./build/*
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [server-build, desktop-build]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download server build
+        uses: actions/download-artifact@v3
+        with:
+          name: server-artifact
+          path: ./build
+
+      - name: Download desktop build
+        uses: actions/download-artifact@v3
+        with:
+          name: desktop-artifact
+          path: ./build
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{secrets.TOKEN}}
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref_name }}
+          body_path: ./build/changelog.md
+          draft: false
+          prerelease: false
+          files: |
+            ./build/*

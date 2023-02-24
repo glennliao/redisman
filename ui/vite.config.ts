@@ -8,7 +8,14 @@ import IconsResolver from "unplugin-icons/resolver";
 // vite.config.ts
 import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite";
 
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
+import {execSync} from 'child_process'
+
+let tag = execSync("git describe --abbrev=0 --tags")
+
+// @ts-ignore
+process.env["VITE_app_version"] = tag
+
 
 // https://vitejs.dev/config/
 export default defineConfig({

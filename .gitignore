@@ -8,3 +8,4 @@ cmd/desktop/frontend
 cmd/desktop/build/bin
 *.exe
 log
+build/

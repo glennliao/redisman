@@ -95,7 +95,7 @@ function connect(id: number) {
     }
     statusTimer = setInterval(()=>{
       status()
-    }, 5* 1000)
+    }, 30 * 1000)
   }).catch((err)=>{
     if(statusTimer !== null){
       clearInterval(statusTimer)

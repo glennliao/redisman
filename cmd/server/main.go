@@ -4,9 +4,10 @@ import (
 	"context"
 	"github.com/glennliao/apijson-go/config"
 	"github.com/glennliao/apijson-go/framework/handler"
-	_ "github.com/glennliao/redisman/packed"
+	_ "github.com/glennliao/redisman/cmd/server/packed"
 	"github.com/glennliao/redisman/server"
 	"github.com/glennliao/redisman/server/api"
+	"github.com/glennliao/redisman/server/version"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/frame/gins"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -15,6 +16,9 @@ import (
 )
 
 func main() {
+
+	version.VersionAction()
+
 	server.Init()
 
 	config.AccessVerify = false

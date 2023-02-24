@@ -42,8 +42,13 @@
 
 ## 版本日志
 
-- 0.5.0 (?)
+- 0.6.0 (?)
   - support lua
+  - support ssh-agent
+
+- 0.5.0 (?)
+  - support update check
+  - support github action
 
 - 0.4.0 (2023-02-21)
   - support terminal
