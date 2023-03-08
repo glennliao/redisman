@@ -1,9 +1,9 @@
 <template>
   <div style="cursor: pointer" class="flex" @click="showModal = true">
-    RedisMan {{version}}
-   <n-badge v-if="version !== latest" dot>
+    RedisMan {{ version }}
+    <n-badge v-if="version !== latest" dot>
       (new)
-   </n-badge>
+    </n-badge>
   </div>
   <n-modal
     v-model:show="showModal"
@@ -17,17 +17,40 @@
   >
 
     <div>
-     <div>
-       curVersion : {{version}}
-     </div>
-      <div >
-        latest: {{latest}}
+      <div class="flex">
+        <div>
+          https://github.com/glennliao/redisman
+        </div>
+        <div class="ml-2">
+          <div><a href="https://github.com/glennliao/redisman" target="_blank" style="text-decoration: none">
+            <n-button size="small" type="primary">download</n-button>
+          </a></div>
+        </div>
+      </div>
+      <div class="flex mt-2">
+        <div>
+          curVersion :
+          <n-tag type="info">
+            {{ version }}
+        </n-tag>
+        </div>
+        <div class="ml-2">
+          latest: {{ latest }}
+          <n-tag type="success">
+            {{ latest }}
+          </n-tag>
+        </div>
+        <div class="ml-4">
+          <n-button size="small" :loading="checking" @click="checkNewVersion" type="info">
+            check
+          </n-button>
+        </div>
       </div>
 
-     <div>
-       <a href="https://github.com/glennliao/redisman" target="_blank">to download</a>
-     </div>
-      <n-button @click="checkNewVersion">check</n-button>
+
+      <div class="flex mt-2">
+
+      </div>
     </div>
     <template #footer>
       <div class="flex justify-end">
@@ -55,12 +78,17 @@ export default {
       footer: 'soft'
     }
 
-    const version = import.meta.env.VITE_app_version
+    const version = import.meta.env.VITE_app_version.trim()
     const latest = ref(version)
 
-    function checkNewVersion(){
-      checkVersion().then(data=>{
-        latest.value = data.latest.Version
+    const checking = ref(false)
+
+    function checkNewVersion() {
+      checking.value = true
+      checkVersion().then(data => {
+        latest.value = data.latest.Version?.trim()
+      }).finally(()=>{
+        checking.value = false
       })
     }
 
@@ -69,7 +97,7 @@ export default {
       open,
       showModal,
       bodyStyle, segmented,
-      checkNewVersion,version,latest
+      checkNewVersion, version, latest,checking
 
     }
   }

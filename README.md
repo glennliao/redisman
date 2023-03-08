@@ -47,7 +47,7 @@
   - support lua
   - support ssh-agent
 
-- 0.5.0 (?)
+- 0.5.0 (2023-03-08)
   - support update check
   - support github action
 
