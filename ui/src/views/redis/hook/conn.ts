@@ -19,7 +19,14 @@ function loadInfo(section = "default") {
       ...toRaw(info.value),
       ...parseInfo(infoStr),
     };
-    databases.value = parseInt(data[1].databases);
+
+    let config = data[1]
+    if(Array.isArray(config)){
+      databases.value = parseInt(data[1][1])
+    }else{
+      databases.value = parseInt(data[1].databases);
+    }
+
   });
 }
 

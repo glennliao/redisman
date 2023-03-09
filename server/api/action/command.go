@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/glennliao/redisman/server/api/ws"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/util/gconv"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -51,11 +50,13 @@ func Command(ctx context.Context, req *ws.Req, reply func(ctx context.Context, r
 			panic(err)
 		}
 
-		if v, ok := ret.(map[any]any); ok {
-			rets[i] = gconv.Map(v)
-		} else {
-			rets[i] = ret
-		}
+		rets[i] = ret
+
+		//if v, ok := ret.(map[any]any); ok {
+		//	rets[i] = gconv.Map(v)
+		//} else {
+		//	rets[i] = ret
+		//}
 	}
 
 	reply(ctx, rets, nil)
